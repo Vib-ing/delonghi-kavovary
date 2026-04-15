@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeLonghi – Průvodce kávovary pro promotéry</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+  <div class="logo">De'Longhi <span>Průvodce pro promotéry</span></div>
+  <div class="header-right">
+    <button class="filter-btn active mode-btn" onclick="filterCards('all',this)" data-filter="all">Vše</button>
+    <button class="filter-btn mode-btn" onclick="filterCards('automatický',this)" data-filter="auto">Automaty</button>
+    <button class="filter-btn mode-btn" onclick="filterCards('pákový',this)" data-filter="paka">Pákové</button>
+    <button class="filter-btn mode-btn" onclick="filterCards('cold',this)" data-filter="cold">Cold Brew</button>
+  </div>
+</header>
+
+<main>
+  <div class="hero">
+    <h1>8 kávovarů.<br><em>Jeden průvodce.</em></h1>
+    <p>Klikni na model a zobraz klíčové informace, prodejní argumenty a kvíz pro procvičení.</p>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div id="quiz-section">
+    <div class="quiz-title" id="quiz-title">Kvíz</div>
+    <div class="quiz-subtitle" id="quiz-subtitle">5 otázek pro promotéra</div>
+    <div id="quiz-questions"></div>
+    <button class="back-btn" onclick="closeQuiz()">← Zpět na přehled</button>
+  </div>
+</main>
+
+<footer>De'Longhi promotér průvodce · 2025 · Pouze pro interní použití</footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
