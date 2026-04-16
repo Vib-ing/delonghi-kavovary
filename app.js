@@ -1,4 +1,4 @@
-let expandedModel = null;
+                                                                                                                                                                  let expandedModel = null;
 let activeFilter = 'all';
 
 function renderCard(m) {
@@ -241,12 +241,12 @@ function showRecResult() {
   `;
 }
 
-/* ── Hádej kávovar ── */
+/* ── Doporuč ten správný ── */
 
 const GUESS_ROUNDS = 5;
 let guessRound = 0;
 let guessCorrect = 0;
-let guessUsed = [];
+let guessUsedScenarios = [];
 
 function shuffle(arr) {
   const a = [...arr];
@@ -257,31 +257,56 @@ function shuffle(arr) {
   return a;
 }
 
-function pickClues(m) {
-  const pool = [];
+const customerLabels = [
+  "Příprava kávy",
+  "Mléčné nápoje",
+  "Studené nápoje",
+  "Počet nápojů a funkcí",
+  "Rozhodující faktor"
+];
 
-  pool.push(`Typ: ${m.type} kávovar`);
-  pool.push(`Kategorie: ${m.tier}`);
+function generateScenario() {
+  const picks = recQuestions.map(q => {
+    const idx = Math.floor(Math.random() * q.options.length);
+    return { text: q.options[idx].text, scores: q.options[idx].scores };
+  });
 
-  m.highlights.forEach(h => pool.push(h));
+  const totals = {};
+  machines.forEach(m => totals[m.model] = 0);
+  picks.forEach(p => {
+    for (const model in p.scores) totals[model] += p.scores[model];
+  });
 
-  if (m.cold) pool.push("Umí Cold Brew za 5 minut");
-  else pool.push("Cold Brew nepodporuje");
+  const sorted = Object.entries(totals).sort((a, b) => b[1] - a[1]);
+  const bestModel = sorted[0][0];
+  const bestScore = sorted[0][1];
+  const secondScore = sorted[1][1];
 
-  if (m.milkAuto) pool.push("Automatický mléčný systém LatteCrema");
-  else if (m.type === 'pákový') pool.push("Ruční parní tryska My Latte Art");
-  else pool.push("Ruční parní tryska pro napěnění mléka");
+  return {
+    answers: picks.map((p, i) => `${customerLabels[i]}: „${p.text}"`),
+    correctModel: bestModel,
+    isClear: bestScore > secondScore
+  };
+}
 
-  m.specs_detail.forEach(s => pool.push(s));
-  m.tags.forEach(t => pool.push(`Klíčová vlastnost: ${t}`));
-
-  return shuffle(pool).slice(0, 4);
+function generateUniqueScenario() {
+  for (let attempt = 0; attempt < 50; attempt++) {
+    const scenario = generateScenario();
+    if (!scenario.isClear) continue;
+    const key = scenario.answers.join('|');
+    if (guessUsedScenarios.includes(key)) continue;
+    guessUsedScenarios.push(key);
+    return scenario;
+  }
+  const fallback = generateScenario();
+  guessUsedScenarios.push(fallback.answers.join('|'));
+  return fallback;
 }
 
 function openGuessGame() {
   guessRound = 0;
   guessCorrect = 0;
-  guessUsed = [];
+  guessUsedScenarios = [];
   document.getElementById('guess-game').classList.add('visible');
   document.querySelector('.guess-trigger').style.display = 'none';
   renderGuessRound();
@@ -303,24 +328,23 @@ function renderGuessRound() {
     return;
   }
 
-  const available = machines.filter(m => !guessUsed.includes(m.model));
-  const target = available[Math.floor(Math.random() * available.length)];
-  guessUsed.push(target.model);
+  const scenario = generateUniqueScenario();
+  const correct = machines.find(m => m.model === scenario.correctModel);
 
-  const clues = pickClues(target);
-  const wrongPool = machines.filter(m => m.model !== target.model);
+  const wrongPool = machines.filter(m => m.model !== scenario.correctModel);
   const wrongPicks = shuffle(wrongPool).slice(0, 3);
-  const options = shuffle([target, ...wrongPicks]);
+  const options = shuffle([correct, ...wrongPicks]);
 
   document.getElementById('guess-body').innerHTML = `
     <div class="q-num">Kolo ${guessRound + 1} z ${GUESS_ROUNDS}</div>
-    <div class="rec-question">Který kávovar odpovídá tomuto popisu?</div>
+    <div class="rec-question">Zákazník ti říká:</div>
     <div class="guess-clues">
-      ${clues.map(c => `<div class="guess-clue">${c}</div>`).join('')}
+      ${scenario.answers.map(a => `<div class="guess-clue">${a}</div>`).join('')}
     </div>
+    <div class="rec-question" style="margin-top:1rem;font-size:14px;">Který kávovar doporučíš?</div>
     <div class="guess-options">
       ${options.map(o => `
-        <button class="guess-opt" data-model="${o.model}" onclick="checkGuess('${target.model}', '${o.model}', this)">
+        <button class="guess-opt" data-model="${o.model}" onclick="checkGuess('${scenario.correctModel}', '${o.model}', this)">
           ${o.name}<br><span style="font-size:11px;color:var(--text3)">${o.model}</span>
         </button>
       `).join('')}
@@ -362,11 +386,11 @@ function showGuessResult() {
 
   const pct = guessCorrect / GUESS_ROUNDS;
   let msg;
-  if (pct === 1) msg = "Perfektní! Znáš portfolio jako vlastní boty.";
-  else if (pct >= 0.8) msg = "Výborně! Máš přehled, jen maličkost doladit.";
-  else if (pct >= 0.6) msg = "Solidní základ. Projdi si pár modelů a budeš mít plný počet.";
-  else if (pct >= 0.4) msg = "Slušný pokus. Zkus si projít karty jednotlivých modelů.";
-  else msg = "Nevadí, procvičíš se! Projdi si přehled a zkus to znovu.";
+  if (pct === 1) msg = "Perfektní! Doporučuješ jako profík.";
+  else if (pct >= 0.8) msg = "Výborně! Máš skvělý přehled o portfoliu.";
+  else if (pct >= 0.6) msg = "Solidní základ. Pár modelů si ještě projdi.";
+  else if (pct >= 0.4) msg = "Slušný pokus. Zkus si projít karty a zkus to znovu.";
+  else msg = "Nevadí! Projdi si přehled modelů a procvičíš se.";
 
   document.getElementById('guess-body').innerHTML = `
     <div class="q-num">Výsledek</div>

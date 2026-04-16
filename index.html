@@ -27,7 +27,7 @@
 
   <div class="game-triggers">
     <button class="recommend-trigger" onclick="openRecommender()">Pomoz mi vybrat kávovar →</button>
-    <button class="recommend-trigger guess-trigger" onclick="openGuessGame()">Hádej kávovar →</button>
+    <button class="recommend-trigger guess-trigger" onclick="openGuessGame()">Doporuč ten správný →</button>
   </div>
 
   <div id="recommender" class="recommender">
@@ -45,10 +45,10 @@
   <div id="guess-game" class="recommender">
     <div class="recommender-header">
       <div class="rec-header-top">
-        <div class="quiz-title">Hádej kávovar</div>
+        <div class="quiz-title">Doporuč ten správný</div>
         <button class="close-btn" onclick="closeGuessGame()">zavřít ✕</button>
       </div>
-      <div class="quiz-subtitle">Přečti si popis a vyber správný model · <span id="guess-score"></span></div>
+      <div class="quiz-subtitle">Zákazník ti řekne co chce – vyber ideální kávovar · <span id="guess-score"></span></div>
       <div class="rec-progress"><div class="rec-progress-bar" id="guess-progress-bar"></div></div>
     </div>
     <div id="guess-body"></div>
