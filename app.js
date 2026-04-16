@@ -1,5 +1,12 @@
-                                                                                                                                                                  let expandedModel = null;
+let expandedModel = null;
 let activeFilter = 'all';
+
+/** Body za „studené nápoje důležité“ — podle příznaku cold v data.js (Eletta, PrimaDonna, Dedica). */
+function scoreByColdImportant() {
+  const s = {};
+  machines.forEach(m => { s[m.model] = m.cold ? 12 : -40; });
+  return s;
+}
 
 function renderCard(m) {
   const show = activeFilter === 'all' ||
@@ -138,7 +145,7 @@ const recQuestions = [
   {
     q: "Má zákazník zájem o studené kávové nápoje (Cold Brew, ledové latte)?",
     options: [
-      { text: "Ano, to je důležité", scores: { "ECAM 470.85.MB": 3, "ECAM 310.80.SB": -1, "ECAM 320.70.TB": -1, "ECAM 22.112.B": -1, "ECAM 220.21.BG": -1, "ECAM 630.75.TSM": 4, "EXAM 440.55.G": -1, "EC 890.M": 3 }},
+      { text: "Ano, to je důležité", scores: scoreByColdImportant() },
       { text: "Bylo by fajn, ale není to priorita", scores: { "ECAM 470.85.MB": 1, "ECAM 310.80.SB": 0, "ECAM 320.70.TB": 0, "ECAM 22.112.B": 0, "ECAM 220.21.BG": 0, "ECAM 630.75.TSM": 1, "EXAM 440.55.G": 0, "EC 890.M": 1 }},
       { text: "Ne, stačí teplé nápoje", scores: { "ECAM 470.85.MB": 0, "ECAM 310.80.SB": 1, "ECAM 320.70.TB": 1, "ECAM 22.112.B": 1, "ECAM 220.21.BG": 1, "ECAM 630.75.TSM": 0, "EXAM 440.55.G": 1, "EC 890.M": 0 }}
     ]
