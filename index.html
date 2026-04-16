@@ -25,15 +25,33 @@
     <p>Klikni na model a zobraz klíčové informace, prodejní argumenty a kvíz pro procvičení.</p>
   </div>
 
-  <button class="recommend-trigger" onclick="openRecommender()">Pomoz mi vybrat kávovar →</button>
+  <div class="game-triggers">
+    <button class="recommend-trigger" onclick="openRecommender()">Pomoz mi vybrat kávovar →</button>
+    <button class="recommend-trigger guess-trigger" onclick="openGuessGame()">Hádej kávovar →</button>
+  </div>
 
   <div id="recommender" class="recommender">
     <div class="recommender-header">
-      <div class="quiz-title">Který kávovar doporučit?</div>
+      <div class="rec-header-top">
+        <div class="quiz-title">Který kávovar doporučit?</div>
+        <button class="close-btn" onclick="closeRecommender()">zavřít ✕</button>
+      </div>
       <div class="quiz-subtitle">5 otázek pro zákazníka · Vyber odpověď a na konci uvidíš doporučení</div>
       <div class="rec-progress"><div class="rec-progress-bar" id="rec-progress-bar"></div></div>
     </div>
     <div id="rec-body"></div>
+  </div>
+
+  <div id="guess-game" class="recommender">
+    <div class="recommender-header">
+      <div class="rec-header-top">
+        <div class="quiz-title">Hádej kávovar</div>
+        <button class="close-btn" onclick="closeGuessGame()">zavřít ✕</button>
+      </div>
+      <div class="quiz-subtitle">Přečti si popis a vyber správný model · <span id="guess-score"></span></div>
+      <div class="rec-progress"><div class="rec-progress-bar" id="guess-progress-bar"></div></div>
+    </div>
+    <div id="guess-body"></div>
   </div>
 
   <div class="grid" id="grid"></div>

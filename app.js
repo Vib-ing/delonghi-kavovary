@@ -241,4 +241,142 @@ function showRecResult() {
   `;
 }
 
+/* ── Hádej kávovar ── */
+
+const GUESS_ROUNDS = 5;
+let guessRound = 0;
+let guessCorrect = 0;
+let guessUsed = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function pickClues(m) {
+  const pool = [];
+
+  pool.push(`Typ: ${m.type} kávovar`);
+  pool.push(`Kategorie: ${m.tier}`);
+
+  m.highlights.forEach(h => pool.push(h));
+
+  if (m.cold) pool.push("Umí Cold Brew za 5 minut");
+  else pool.push("Cold Brew nepodporuje");
+
+  if (m.milkAuto) pool.push("Automatický mléčný systém LatteCrema");
+  else if (m.type === 'pákový') pool.push("Ruční parní tryska My Latte Art");
+  else pool.push("Ruční parní tryska pro napěnění mléka");
+
+  m.specs_detail.forEach(s => pool.push(s));
+  m.tags.forEach(t => pool.push(`Klíčová vlastnost: ${t}`));
+
+  return shuffle(pool).slice(0, 4);
+}
+
+function openGuessGame() {
+  guessRound = 0;
+  guessCorrect = 0;
+  guessUsed = [];
+  document.getElementById('guess-game').classList.add('visible');
+  document.querySelector('.guess-trigger').style.display = 'none';
+  renderGuessRound();
+  setTimeout(() => document.getElementById('guess-game').scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+}
+
+function closeGuessGame() {
+  document.getElementById('guess-game').classList.remove('visible');
+  document.querySelector('.guess-trigger').style.display = 'block';
+}
+
+function renderGuessRound() {
+  const bar = document.getElementById('guess-progress-bar');
+  bar.style.width = ((guessRound / GUESS_ROUNDS) * 100) + '%';
+  document.getElementById('guess-score').textContent = `Skóre: ${guessCorrect}/${guessRound}`;
+
+  if (guessRound >= GUESS_ROUNDS) {
+    showGuessResult();
+    return;
+  }
+
+  const available = machines.filter(m => !guessUsed.includes(m.model));
+  const target = available[Math.floor(Math.random() * available.length)];
+  guessUsed.push(target.model);
+
+  const clues = pickClues(target);
+  const wrongPool = machines.filter(m => m.model !== target.model);
+  const wrongPicks = shuffle(wrongPool).slice(0, 3);
+  const options = shuffle([target, ...wrongPicks]);
+
+  document.getElementById('guess-body').innerHTML = `
+    <div class="q-num">Kolo ${guessRound + 1} z ${GUESS_ROUNDS}</div>
+    <div class="rec-question">Který kávovar odpovídá tomuto popisu?</div>
+    <div class="guess-clues">
+      ${clues.map(c => `<div class="guess-clue">${c}</div>`).join('')}
+    </div>
+    <div class="guess-options">
+      ${options.map(o => `
+        <button class="guess-opt" data-model="${o.model}" onclick="checkGuess('${target.model}', '${o.model}', this)">
+          ${o.name}<br><span style="font-size:11px;color:var(--text3)">${o.model}</span>
+        </button>
+      `).join('')}
+    </div>
+    <div id="guess-feedback-area"></div>
+  `;
+}
+
+function checkGuess(correctModel, pickedModel, btn) {
+  const allBtns = document.querySelectorAll('.guess-opt');
+  allBtns.forEach(b => {
+    b.disabled = true;
+    if (b.dataset.model === correctModel) b.classList.add('correct');
+  });
+
+  const isCorrect = correctModel === pickedModel;
+  if (isCorrect) guessCorrect++;
+  else btn.classList.add('wrong');
+
+  const correct = machines.find(m => m.model === correctModel);
+  document.getElementById('guess-feedback-area').innerHTML = `
+    <div class="guess-feedback ${isCorrect ? 'correct' : 'wrong'}">
+      ${isCorrect
+        ? `<strong>Správně!</strong> ${correct.name} — ${correct.promo}`
+        : `<strong>Špatně.</strong> Správná odpověď: <strong>${correct.name}</strong> — ${correct.promo}`
+      }
+    </div>
+    <button class="guess-next-btn" onclick="guessRound++;renderGuessRound()">
+      ${guessRound + 1 < GUESS_ROUNDS ? 'Další kolo →' : 'Zobrazit výsledek →'}
+    </button>
+  `;
+
+  document.getElementById('guess-score').textContent = `Skóre: ${guessCorrect}/${guessRound + 1}`;
+}
+
+function showGuessResult() {
+  document.getElementById('guess-progress-bar').style.width = '100%';
+  document.getElementById('guess-score').textContent = `Skóre: ${guessCorrect}/${GUESS_ROUNDS}`;
+
+  const pct = guessCorrect / GUESS_ROUNDS;
+  let msg;
+  if (pct === 1) msg = "Perfektní! Znáš portfolio jako vlastní boty.";
+  else if (pct >= 0.8) msg = "Výborně! Máš přehled, jen maličkost doladit.";
+  else if (pct >= 0.6) msg = "Solidní základ. Projdi si pár modelů a budeš mít plný počet.";
+  else if (pct >= 0.4) msg = "Slušný pokus. Zkus si projít karty jednotlivých modelů.";
+  else msg = "Nevadí, procvičíš se! Projdi si přehled a zkus to znovu.";
+
+  document.getElementById('guess-body').innerHTML = `
+    <div class="q-num">Výsledek</div>
+    <div class="guess-final-score">${guessCorrect} / ${GUESS_ROUNDS}</div>
+    <div class="guess-final-msg">${msg}</div>
+    <div class="rec-actions">
+      <button class="rec-action-btn rec-action-primary" onclick="openGuessGame()">Hrát znovu</button>
+      <button class="rec-action-btn rec-action-secondary" onclick="closeGuessGame()">Zavřít</button>
+    </div>
+  `;
+}
+
 renderGrid();
