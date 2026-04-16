@@ -116,19 +116,13 @@ function closeQuiz() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
- * BODOVACÍ CVIČENÍ — dočasně vypnuto (doporučovač + „Doporuč ten správný“).
- * V portfoliu jen 8 kávovarů; systém hodnocení zatím nevyužíváme.
- * Obnovení: odkomentovat tento blok + odpovídající sekci v index.html.
- * ═══════════════════════════════════════════════════════════════════════════
+// -- Recommender: Pomoz mi vybrat kavovar ------------------------------------
 
 function scoreByColdImportant() {
   const s = {};
   machines.forEach(m => { s[m.model] = m.cold ? 12 : -40; });
   return s;
 }
-
-// ── Recommender ──
 
 const recQuestions = [
   {
@@ -175,6 +169,24 @@ const recQuestions = [
 
 let recStep = 0;
 let recScores = {};
+
+const MODEL_TIEBREAK_ORDER = [
+  "ECAM 630.75.TSM",
+  "ECAM 470.85.MB",
+  "EXAM 440.55.G",
+  "ECAM 320.70.TB",
+  "ECAM 310.80.SB",
+  "ECAM 22.112.B",
+  "EC 890.M",
+  "ECAM 220.21.BG"
+];
+
+function sortedModelsByScore(totals) {
+  return Object.entries(totals).sort((a, b) => {
+    if (b[1] !== a[1]) return b[1] - a[1];
+    return MODEL_TIEBREAK_ORDER.indexOf(a[0]) - MODEL_TIEBREAK_ORDER.indexOf(b[0]);
+  });
+}
 
 function openRecommender() {
   recStep = 0;
@@ -258,7 +270,8 @@ function showRecResult() {
   `;
 }
 
-// ── Doporuč ten správný ──
+/* -- Doporuc ten spravny -- docasne vypnuto ----------------------------------
+// Obnoveni: odkomentovat tento blok + odpovidajici sekci v index.html.
 
 const GUESS_ROUNDS = 5;
 let guessRound = 0;
@@ -275,23 +288,11 @@ function shuffle(arr) {
 }
 
 const customerLabels = [
-  "Příprava kávy",
-  "Mléčné nápoje",
-  "Studené nápoje",
-  "Počet nápojů a funkcí",
-  "Rozhodující faktor"
-];
-
-// Při shodě bodů vítězí model dříve v poli (vyšší segment portfolia).
-const MODEL_TIEBREAK_ORDER = [
-  "ECAM 630.75.TSM",
-  "ECAM 470.85.MB",
-  "EXAM 440.55.G",
-  "ECAM 320.70.TB",
-  "ECAM 310.80.SB",
-  "ECAM 22.112.B",
-  "EC 890.M",
-  "ECAM 220.21.BG"
+  "Priprava kavy",
+  "Mlecne napoje",
+  "Studene napoje",
+  "Pocet napoju a funkci",
+  "Rozhodujici faktor"
 ];
 
 function escapeHtml(str) {
@@ -311,13 +312,6 @@ function scoreTotalsFromPicks(picks) {
   return totals;
 }
 
-function sortedModelsByScore(totals) {
-  return Object.entries(totals).sort((a, b) => {
-    if (b[1] !== a[1]) return b[1] - a[1];
-    return MODEL_TIEBREAK_ORDER.indexOf(a[0]) - MODEL_TIEBREAK_ORDER.indexOf(b[0]);
-  });
-}
-
 function pickWinningModel(totals) {
   return sortedModelsByScore(totals)[0][0];
 }
@@ -333,7 +327,7 @@ function generateScenario() {
 
   return {
     picks,
-    answers: picks.map((p, i) => `${customerLabels[i]}: „${p.text}"`),
+    answers: picks.map((p, i) => customerLabels[i] + ': "' + p.text + '"'),
     correctModel,
     scenarioKey: picks.map(p => p.text).join("\u0001")
   };
@@ -374,7 +368,7 @@ function refreshCurrentGuessRound() {
 function renderGuessRound() {
   const bar = document.getElementById('guess-progress-bar');
   bar.style.width = ((guessRound / GUESS_ROUNDS) * 100) + '%';
-  document.getElementById('guess-score').textContent = `Skóre: ${guessCorrect}/${guessRound}`;
+  document.getElementById('guess-score').textContent = 'Skore: ' + guessCorrect + '/' + guessRound;
 
   if (guessRound >= GUESS_ROUNDS) {
     showGuessResult();
@@ -391,23 +385,22 @@ function renderGuessRound() {
   const guessBody = document.getElementById("guess-body");
   guessBody.dataset.correctModel = scenario.correctModel;
 
-  guessBody.innerHTML = `
-    <div class="q-num">Kolo ${guessRound + 1} z ${GUESS_ROUNDS}</div>
-    <div class="rec-question">Zákazník ti říká:</div>
-    <div class="guess-clues">
-      ${scenario.answers.map(a => `<div class="guess-clue">${escapeHtml(a)}</div>`).join("")}
-    </div>
-    <div class="rec-question" style="margin-top:1rem;font-size:14px;">Který kávovar doporučíš?</div>
-    <div class="guess-options">
-      ${options.map(o => `
-        <button type="button" class="guess-opt" data-model="${o.model}" onclick="checkGuessFromBtn(this)">
-          ${escapeHtml(o.name)}<br><span style="font-size:11px;color:var(--text3)">${escapeHtml(o.model)}</span>
-        </button>
-      `).join("")}
-    </div>
-    <div id="guess-feedback-area"></div>
-    <button type="button" class="rec-action-btn rec-action-secondary rec-restart-btn" onclick="refreshCurrentGuessRound()">Znovu</button>
-  `;
+  guessBody.innerHTML =
+    '<div class="q-num">Kolo ' + (guessRound + 1) + ' z ' + GUESS_ROUNDS + '</div>' +
+    '<div class="rec-question">Zakaznik ti rika:</div>' +
+    '<div class="guess-clues">' +
+      scenario.answers.map(a => '<div class="guess-clue">' + escapeHtml(a) + '</div>').join("") +
+    '</div>' +
+    '<div class="rec-question" style="margin-top:1rem;font-size:14px;">Ktery kavovar doporucis?</div>' +
+    '<div class="guess-options">' +
+      options.map(o =>
+        '<button type="button" class="guess-opt" data-model="' + o.model + '" onclick="checkGuessFromBtn(this)">' +
+          escapeHtml(o.name) + '<br><span style="font-size:11px;color:var(--text3)">' + escapeHtml(o.model) + '</span>' +
+        '</button>'
+      ).join("") +
+    '</div>' +
+    '<div id="guess-feedback-area"></div>' +
+    '<button type="button" class="rec-action-btn rec-action-secondary rec-restart-btn" onclick="refreshCurrentGuessRound()">Znovu</button>';
 }
 
 function checkGuessFromBtn(btn) {
@@ -431,42 +424,38 @@ function checkGuess(correctModel, pickedModel, btn) {
   document.querySelector('#guess-body .rec-restart-btn')?.remove();
 
   const correct = machines.find(m => m.model === correctModel);
-  document.getElementById('guess-feedback-area').innerHTML = `
-    <div class="guess-feedback ${isCorrect ? 'correct' : 'wrong'}">
-      ${isCorrect
-        ? `<strong>Správně!</strong> ${correct.name} — ${correct.promo}`
-        : `<strong>Špatně.</strong> Správná odpověď: <strong>${correct.name}</strong> — ${correct.promo}`
-      }
-    </div>
-    <button class="guess-next-btn" onclick="guessRound++;renderGuessRound()">
-      ${guessRound + 1 < GUESS_ROUNDS ? 'Další kolo →' : 'Zobrazit výsledek →'}
-    </button>
-  `;
+  const feedbackMsg = isCorrect
+    ? '<strong>Spravne!</strong> ' + correct.name + ' — ' + correct.promo
+    : '<strong>Spatne.</strong> Spravna odpoved: <strong>' + correct.name + '</strong> — ' + correct.promo;
+  const nextLabel = (guessRound + 1 < GUESS_ROUNDS) ? 'Dalsi kolo ->' : 'Zobrazit vysledek ->';
 
-  document.getElementById('guess-score').textContent = `Skóre: ${guessCorrect}/${guessRound + 1}`;
+  document.getElementById('guess-feedback-area').innerHTML =
+    '<div class="guess-feedback ' + (isCorrect ? 'correct' : 'wrong') + '">' + feedbackMsg + '</div>' +
+    '<button class="guess-next-btn" onclick="guessRound++;renderGuessRound()">' + nextLabel + '</button>';
+
+  document.getElementById('guess-score').textContent = 'Skore: ' + guessCorrect + '/' + (guessRound + 1);
 }
 
 function showGuessResult() {
   document.getElementById('guess-progress-bar').style.width = '100%';
-  document.getElementById('guess-score').textContent = `Skóre: ${guessCorrect}/${GUESS_ROUNDS}`;
+  document.getElementById('guess-score').textContent = 'Skore: ' + guessCorrect + '/' + GUESS_ROUNDS;
 
   const pct = guessCorrect / GUESS_ROUNDS;
   let msg;
-  if (pct === 1) msg = "Perfektní! Doporučuješ jako profík.";
-  else if (pct >= 0.8) msg = "Výborně! Máš skvělý přehled o portfoliu.";
-  else if (pct >= 0.6) msg = "Solidní základ. Pár modelů si ještě projdi.";
-  else if (pct >= 0.4) msg = "Slušný pokus. Zkus si projít karty a zkus to znovu.";
-  else msg = "Nevadí! Projdi si přehled modelů a procvičíš se.";
+  if (pct === 1) msg = "Perfektni! Doporucujes jako profik.";
+  else if (pct >= 0.8) msg = "Vyborne! Mas skvely prehled o portfoliu.";
+  else if (pct >= 0.6) msg = "Solidni zaklad. Par modelu si jeste projdi.";
+  else if (pct >= 0.4) msg = "Slusny pokus. Zkus si projit karty a zkus to znovu.";
+  else msg = "Nevadi! Projdi si prehled modelu a procvicis se.";
 
-  document.getElementById('guess-body').innerHTML = `
-    <div class="q-num">Výsledek</div>
-    <div class="guess-final-score">${guessCorrect} / ${GUESS_ROUNDS}</div>
-    <div class="guess-final-msg">${msg}</div>
-    <div class="rec-actions">
-      <button class="rec-action-btn rec-action-primary" onclick="openGuessGame()">Hrát znovu</button>
-      <button class="rec-action-btn rec-action-secondary" onclick="closeGuessGame()">Zavřít</button>
-    </div>
-  `;
+  document.getElementById('guess-body').innerHTML =
+    '<div class="q-num">Vysledek</div>' +
+    '<div class="guess-final-score">' + guessCorrect + ' / ' + GUESS_ROUNDS + '</div>' +
+    '<div class="guess-final-msg">' + msg + '</div>' +
+    '<div class="rec-actions">' +
+      '<button class="rec-action-btn rec-action-primary" onclick="openGuessGame()">Hrat znovu</button>' +
+      '<button class="rec-action-btn rec-action-secondary" onclick="closeGuessGame()">Zavrit</button>' +
+    '</div>';
 }
 
 */
