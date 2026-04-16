@@ -25,6 +25,17 @@
     <p>Klikni na model a zobraz klíčové informace, prodejní argumenty a kvíz pro procvičení.</p>
   </div>
 
+  <button class="recommend-trigger" onclick="openRecommender()">Pomoz mi vybrat kávovar →</button>
+
+  <div id="recommender" class="recommender">
+    <div class="recommender-header">
+      <div class="quiz-title">Který kávovar doporučit?</div>
+      <div class="quiz-subtitle">5 otázek pro zákazníka · Vyber odpověď a na konci uvidíš doporučení</div>
+      <div class="rec-progress"><div class="rec-progress-bar" id="rec-progress-bar"></div></div>
+    </div>
+    <div id="rec-body"></div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div id="quiz-section">
