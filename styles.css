@@ -596,6 +596,8 @@ footer {
 
 .rec-action-secondary:hover { background: rgba(255,255,255,0.04); color: var(--text); }
 
+.rec-restart-btn { margin-top: 1.25rem; width: 100%; flex: none; }
+
 .guess-trigger {
   background: linear-gradient(135deg, rgba(74,158,106,0.1), rgba(74,158,106,0.05));
   border-color: rgba(74,158,106,0.3);

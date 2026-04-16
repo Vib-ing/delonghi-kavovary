@@ -197,6 +197,7 @@ function renderRecStep() {
         <button class="rec-option" onclick="pickRecOption(${recStep}, ${i})">${o.text}</button>
       `).join('')}
     </div>
+    <button class="rec-action-btn rec-action-secondary rec-restart-btn" onclick="openRecommender()">Znovu</button>
   `;
 }
 
@@ -350,6 +351,7 @@ function renderGuessRound() {
       `).join('')}
     </div>
     <div id="guess-feedback-area"></div>
+    <button class="rec-action-btn rec-action-secondary rec-restart-btn" onclick="openGuessGame()">Znovu</button>
   `;
 }
 
