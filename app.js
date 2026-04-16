@@ -179,6 +179,10 @@ function closeRecommender() {
   document.querySelector('.recommend-trigger').style.display = 'block';
 }
 
+function refreshRecTask() {
+  renderRecStep();
+}
+
 function renderRecStep() {
   const bar = document.getElementById('rec-progress-bar');
   bar.style.width = ((recStep / recQuestions.length) * 100) + '%';
@@ -197,7 +201,7 @@ function renderRecStep() {
         <button class="rec-option" onclick="pickRecOption(${recStep}, ${i})">${o.text}</button>
       `).join('')}
     </div>
-    <button class="rec-action-btn rec-action-secondary rec-restart-btn" onclick="openRecommender()">Znovu</button>
+    <button class="rec-action-btn rec-action-secondary rec-restart-btn" onclick="refreshRecTask()">Znovu</button>
   `;
 }
 
@@ -319,6 +323,11 @@ function closeGuessGame() {
   document.querySelector('.guess-trigger').style.display = 'block';
 }
 
+function refreshCurrentGuessRound() {
+  if (guessUsedScenarios.length > 0) guessUsedScenarios.pop();
+  renderGuessRound();
+}
+
 function renderGuessRound() {
   const bar = document.getElementById('guess-progress-bar');
   bar.style.width = ((guessRound / GUESS_ROUNDS) * 100) + '%';
@@ -351,7 +360,7 @@ function renderGuessRound() {
       `).join('')}
     </div>
     <div id="guess-feedback-area"></div>
-    <button class="rec-action-btn rec-action-secondary rec-restart-btn" onclick="openGuessGame()">Znovu</button>
+    <button class="rec-action-btn rec-action-secondary rec-restart-btn" onclick="refreshCurrentGuessRound()">Znovu</button>
   `;
 }
 
@@ -365,6 +374,8 @@ function checkGuess(correctModel, pickedModel, btn) {
   const isCorrect = correctModel === pickedModel;
   if (isCorrect) guessCorrect++;
   else btn.classList.add('wrong');
+
+  document.querySelector('#guess-body .rec-restart-btn')?.remove();
 
   const correct = machines.find(m => m.model === correctModel);
   document.getElementById('guess-feedback-area').innerHTML = `
