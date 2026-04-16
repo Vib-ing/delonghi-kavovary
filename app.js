@@ -217,7 +217,7 @@ function pickRecOption(step, optIdx) {
 function showRecResult() {
   document.getElementById('rec-progress-bar').style.width = '100%';
 
-  const sorted = Object.entries(recScores).sort((a, b) => b[1] - a[1]);
+  const sorted = sortedModelsByScore(recScores);
   const best = machines.find(m => m.model === sorted[0][0]);
   const runner1 = machines.find(m => m.model === sorted[1][0]);
   const runner2 = machines.find(m => m.model === sorted[2][0]);
@@ -270,42 +270,73 @@ const customerLabels = [
   "Rozhodující faktor"
 ];
 
+/** Při shodě bodů vítězí model dříve v poli (vyšší segment portfolia). */
+const MODEL_TIEBREAK_ORDER = [
+  "ECAM 630.75.TSM",
+  "ECAM 470.85.MB",
+  "EXAM 440.55.G",
+  "ECAM 320.70.TB",
+  "ECAM 310.80.SB",
+  "ECAM 22.112.B",
+  "EC 890.M",
+  "ECAM 220.21.BG"
+];
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function scoreTotalsFromPicks(picks) {
+  const totals = {};
+  machines.forEach(m => { totals[m.model] = 0; });
+  picks.forEach(p => {
+    for (const model in p.scores) totals[model] += p.scores[model];
+  });
+  return totals;
+}
+
+function sortedModelsByScore(totals) {
+  return Object.entries(totals).sort((a, b) => {
+    if (b[1] !== a[1]) return b[1] - a[1];
+    return MODEL_TIEBREAK_ORDER.indexOf(a[0]) - MODEL_TIEBREAK_ORDER.indexOf(b[0]);
+  });
+}
+
+function pickWinningModel(totals) {
+  return sortedModelsByScore(totals)[0][0];
+}
+
 function generateScenario() {
   const picks = recQuestions.map(q => {
     const idx = Math.floor(Math.random() * q.options.length);
     return { text: q.options[idx].text, scores: q.options[idx].scores };
   });
 
-  const totals = {};
-  machines.forEach(m => totals[m.model] = 0);
-  picks.forEach(p => {
-    for (const model in p.scores) totals[model] += p.scores[model];
-  });
-
-  const sorted = Object.entries(totals).sort((a, b) => b[1] - a[1]);
-  const bestModel = sorted[0][0];
-  const bestScore = sorted[0][1];
-  const secondScore = sorted[1][1];
+  const totals = scoreTotalsFromPicks(picks);
+  const correctModel = pickWinningModel(totals);
 
   return {
+    picks,
     answers: picks.map((p, i) => `${customerLabels[i]}: „${p.text}"`),
-    correctModel: bestModel,
-    isClear: bestScore > secondScore
+    correctModel,
+    scenarioKey: picks.map(p => p.text).join("\u0001")
   };
 }
 
 function generateUniqueScenario() {
-  for (let attempt = 0; attempt < 50; attempt++) {
+  for (let attempt = 0; attempt < 400; attempt++) {
     const scenario = generateScenario();
-    if (!scenario.isClear) continue;
-    const key = scenario.answers.join('|');
-    if (guessUsedScenarios.includes(key)) continue;
-    guessUsedScenarios.push(key);
+    if (guessUsedScenarios.includes(scenario.scenarioKey)) continue;
+    guessUsedScenarios.push(scenario.scenarioKey);
     return scenario;
   }
-  const fallback = generateScenario();
-  guessUsedScenarios.push(fallback.answers.join('|'));
-  return fallback;
+  const scenario = generateScenario();
+  guessUsedScenarios.push(scenario.scenarioKey);
+  return scenario;
 }
 
 function openGuessGame() {
@@ -345,23 +376,33 @@ function renderGuessRound() {
   const wrongPicks = shuffle(wrongPool).slice(0, 3);
   const options = shuffle([correct, ...wrongPicks]);
 
-  document.getElementById('guess-body').innerHTML = `
+  const guessBody = document.getElementById("guess-body");
+  guessBody.dataset.correctModel = scenario.correctModel;
+
+  guessBody.innerHTML = `
     <div class="q-num">Kolo ${guessRound + 1} z ${GUESS_ROUNDS}</div>
     <div class="rec-question">Zákazník ti říká:</div>
     <div class="guess-clues">
-      ${scenario.answers.map(a => `<div class="guess-clue">${a}</div>`).join('')}
+      ${scenario.answers.map(a => `<div class="guess-clue">${escapeHtml(a)}</div>`).join("")}
     </div>
     <div class="rec-question" style="margin-top:1rem;font-size:14px;">Který kávovar doporučíš?</div>
     <div class="guess-options">
       ${options.map(o => `
-        <button class="guess-opt" data-model="${o.model}" onclick="checkGuess('${scenario.correctModel}', '${o.model}', this)">
-          ${o.name}<br><span style="font-size:11px;color:var(--text3)">${o.model}</span>
+        <button type="button" class="guess-opt" data-model="${o.model}" onclick="checkGuessFromBtn(this)">
+          ${escapeHtml(o.name)}<br><span style="font-size:11px;color:var(--text3)">${escapeHtml(o.model)}</span>
         </button>
-      `).join('')}
+      `).join("")}
     </div>
     <div id="guess-feedback-area"></div>
-    <button class="rec-action-btn rec-action-secondary rec-restart-btn" onclick="refreshCurrentGuessRound()">Znovu</button>
+    <button type="button" class="rec-action-btn rec-action-secondary rec-restart-btn" onclick="refreshCurrentGuessRound()">Znovu</button>
   `;
+}
+
+function checkGuessFromBtn(btn) {
+  const root = document.getElementById("guess-body");
+  const correctModel = root.dataset.correctModel;
+  const pickedModel = btn.getAttribute("data-model");
+  checkGuess(correctModel, pickedModel, btn);
 }
 
 function checkGuess(correctModel, pickedModel, btn) {
