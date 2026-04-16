@@ -122,23 +122,23 @@ const recQuestions = [
   {
     q: "Jak si zákazník představuje přípravu kávy?",
     options: [
-      { text: "Jedním dotykem, plně automaticky", scores: { "ECAM 470.85.MB": 2, "ECAM 310.80.SB": 2, "ECAM 320.70.TB": 2, "ECAM 22.112.B": 1, "ECAM 220.21.BG": 1, "ECAM 630.75.TSM": 2, "EXAM 440.55.G": 2, "EC 890.M": 0 }},
-      { text: "Baristický přístup – ruční příprava, kontrola nad výsledkem", scores: { "ECAM 470.85.MB": 0, "ECAM 310.80.SB": 0, "ECAM 320.70.TB": 0, "ECAM 22.112.B": 1, "ECAM 220.21.BG": 0, "ECAM 630.75.TSM": 0, "EXAM 440.55.G": 0, "EC 890.M": 3 }},
-      { text: "Hlavně jednoduše, bez zbytečných komplikací", scores: { "ECAM 470.85.MB": 0, "ECAM 310.80.SB": 1, "ECAM 320.70.TB": 1, "ECAM 22.112.B": 2, "ECAM 220.21.BG": 3, "ECAM 630.75.TSM": 0, "EXAM 440.55.G": 0, "EC 890.M": 1 }}
+      { text: "Jedním dotykem, plně automaticky", scores: { "ECAM 470.85.MB": 3, "ECAM 310.80.SB": 3, "ECAM 320.70.TB": 3, "ECAM 22.112.B": 2, "ECAM 220.21.BG": 2, "ECAM 630.75.TSM": 3, "EXAM 440.55.G": 3, "EC 890.M": -3 }},
+      { text: "Baristický přístup – ruční příprava, kontrola nad výsledkem", scores: { "ECAM 470.85.MB": 0, "ECAM 310.80.SB": 0, "ECAM 320.70.TB": 0, "ECAM 22.112.B": 1, "ECAM 220.21.BG": 0, "ECAM 630.75.TSM": 0, "EXAM 440.55.G": 0, "EC 890.M": 5 }},
+      { text: "Hlavně jednoduše, bez zbytečných komplikací", scores: { "ECAM 470.85.MB": 0, "ECAM 310.80.SB": 2, "ECAM 320.70.TB": 1, "ECAM 22.112.B": 2, "ECAM 220.21.BG": 3, "ECAM 630.75.TSM": 0, "EXAM 440.55.G": 0, "EC 890.M": 1 }}
     ]
   },
   {
     q: "Jak důležité jsou mléčné nápoje (cappuccino, latte)?",
     options: [
-      { text: "Nepiji – stačí espresso, lungo", scores: { "ECAM 470.85.MB": 0, "ECAM 310.80.SB": 0, "ECAM 320.70.TB": 0, "ECAM 22.112.B": 2, "ECAM 220.21.BG": 2, "ECAM 630.75.TSM": 0, "EXAM 440.55.G": 0, "EC 890.M": 1 }},
-      { text: "Občas ano, nevadí mi ruční napěnění", scores: { "ECAM 470.85.MB": 0, "ECAM 310.80.SB": 0, "ECAM 320.70.TB": 0, "ECAM 22.112.B": 2, "ECAM 220.21.BG": 1, "ECAM 630.75.TSM": 0, "EXAM 440.55.G": 0, "EC 890.M": 2 }},
-      { text: "Piji často, chci automatické napěnění jedním dotykem", scores: { "ECAM 470.85.MB": 3, "ECAM 310.80.SB": 3, "ECAM 320.70.TB": 3, "ECAM 22.112.B": 0, "ECAM 220.21.BG": 0, "ECAM 630.75.TSM": 3, "EXAM 440.55.G": 3, "EC 890.M": 0 }}
+      { text: "Nepiji – stačí espresso, lungo", scores: { "ECAM 470.85.MB": 0, "ECAM 310.80.SB": 0, "ECAM 320.70.TB": 0, "ECAM 22.112.B": 3, "ECAM 220.21.BG": 3, "ECAM 630.75.TSM": 0, "EXAM 440.55.G": 0, "EC 890.M": 2 }},
+      { text: "Občas ano, nevadí mi ruční napěnění", scores: { "ECAM 470.85.MB": 0, "ECAM 310.80.SB": 0, "ECAM 320.70.TB": 0, "ECAM 22.112.B": 4, "ECAM 220.21.BG": 1, "ECAM 630.75.TSM": 0, "EXAM 440.55.G": 0, "EC 890.M": 3 }},
+      { text: "Piji často, chci automatické napěnění jedním dotykem", scores: { "ECAM 470.85.MB": 5, "ECAM 310.80.SB": 5, "ECAM 320.70.TB": 5, "ECAM 22.112.B": -3, "ECAM 220.21.BG": -3, "ECAM 630.75.TSM": 5, "EXAM 440.55.G": 5, "EC 890.M": -3 }}
     ]
   },
   {
     q: "Má zákazník zájem o studené kávové nápoje (Cold Brew, ledové latte)?",
     options: [
-      { text: "Ano, to je důležité", scores: { "ECAM 470.85.MB": 3, "ECAM 310.80.SB": 0, "ECAM 320.70.TB": 0, "ECAM 22.112.B": 0, "ECAM 220.21.BG": 0, "ECAM 630.75.TSM": 3, "EXAM 440.55.G": 0, "EC 890.M": 2 }},
+      { text: "Ano, to je důležité", scores: { "ECAM 470.85.MB": 3, "ECAM 310.80.SB": -1, "ECAM 320.70.TB": -1, "ECAM 22.112.B": -1, "ECAM 220.21.BG": -1, "ECAM 630.75.TSM": 4, "EXAM 440.55.G": -1, "EC 890.M": 3 }},
       { text: "Bylo by fajn, ale není to priorita", scores: { "ECAM 470.85.MB": 1, "ECAM 310.80.SB": 0, "ECAM 320.70.TB": 0, "ECAM 22.112.B": 0, "ECAM 220.21.BG": 0, "ECAM 630.75.TSM": 1, "EXAM 440.55.G": 0, "EC 890.M": 1 }},
       { text: "Ne, stačí teplé nápoje", scores: { "ECAM 470.85.MB": 0, "ECAM 310.80.SB": 1, "ECAM 320.70.TB": 1, "ECAM 22.112.B": 1, "ECAM 220.21.BG": 1, "ECAM 630.75.TSM": 0, "EXAM 440.55.G": 1, "EC 890.M": 0 }}
     ]
@@ -148,15 +148,15 @@ const recQuestions = [
     options: [
       { text: "Stačí základy – espresso a lungo", scores: { "ECAM 470.85.MB": 0, "ECAM 310.80.SB": 0, "ECAM 320.70.TB": 0, "ECAM 22.112.B": 2, "ECAM 220.21.BG": 3, "ECAM 630.75.TSM": 0, "EXAM 440.55.G": 0, "EC 890.M": 2 }},
       { text: "Slušný výběr 10–20 nápojů", scores: { "ECAM 470.85.MB": 1, "ECAM 310.80.SB": 3, "ECAM 320.70.TB": 3, "ECAM 22.112.B": 0, "ECAM 220.21.BG": 0, "ECAM 630.75.TSM": 1, "EXAM 440.55.G": 3, "EC 890.M": 0 }},
-      { text: "Maximum – 30+ receptů, aplikace, chytré funkce", scores: { "ECAM 470.85.MB": 3, "ECAM 310.80.SB": 0, "ECAM 320.70.TB": 1, "ECAM 22.112.B": 0, "ECAM 220.21.BG": 0, "ECAM 630.75.TSM": 3, "EXAM 440.55.G": 1, "EC 890.M": 0 }}
+      { text: "Maximum – 30+ receptů, aplikace, chytré funkce", scores: { "ECAM 470.85.MB": 4, "ECAM 310.80.SB": 0, "ECAM 320.70.TB": 1, "ECAM 22.112.B": 0, "ECAM 220.21.BG": 0, "ECAM 630.75.TSM": 3, "EXAM 440.55.G": 1, "EC 890.M": 0 }}
     ]
   },
   {
     q: "Co je pro zákazníka rozhodující?",
     options: [
-      { text: "Co nejnižší cena", scores: { "ECAM 470.85.MB": 0, "ECAM 310.80.SB": 1, "ECAM 320.70.TB": 0, "ECAM 22.112.B": 2, "ECAM 220.21.BG": 3, "ECAM 630.75.TSM": 0, "EXAM 440.55.G": 0, "EC 890.M": 2 }},
+      { text: "Co nejnižší cena", scores: { "ECAM 470.85.MB": 0, "ECAM 310.80.SB": 1, "ECAM 320.70.TB": 0, "ECAM 22.112.B": 3, "ECAM 220.21.BG": 3, "ECAM 630.75.TSM": 0, "EXAM 440.55.G": 0, "EC 890.M": 2 }},
       { text: "Dobrý poměr cena/funkce", scores: { "ECAM 470.85.MB": 1, "ECAM 310.80.SB": 3, "ECAM 320.70.TB": 2, "ECAM 22.112.B": 1, "ECAM 220.21.BG": 0, "ECAM 630.75.TSM": 0, "EXAM 440.55.G": 2, "EC 890.M": 1 }},
-      { text: "Chce to nejlepší – prémiový zážitek", scores: { "ECAM 470.85.MB": 3, "ECAM 310.80.SB": 0, "ECAM 320.70.TB": 1, "ECAM 22.112.B": 0, "ECAM 220.21.BG": 0, "ECAM 630.75.TSM": 3, "EXAM 440.55.G": 1, "EC 890.M": 0 }}
+      { text: "Chce to nejlepší – prémiový zážitek", scores: { "ECAM 470.85.MB": 3, "ECAM 310.80.SB": 0, "ECAM 320.70.TB": 1, "ECAM 22.112.B": 0, "ECAM 220.21.BG": 0, "ECAM 630.75.TSM": 4, "EXAM 440.55.G": 2, "EC 890.M": 0 }}
     ]
   }
 ];
