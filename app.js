@@ -36,7 +36,7 @@ function renderCard(m) {
       <div class="detail">
         <div class="detail-header">
           <h3>Klíčové informace pro promotéra</h3>
-          <button class="close-btn" onclick="event.stopPropagation();toggleCard('${m.model}')">zavřít ✕</button>
+          <button class="close-btn" onclick="event.stopPropagation();closeCard()">zavřít ✕</button>
         </div>
         <div class="detail-cols">
           <div class="detail-section">
@@ -64,14 +64,18 @@ function renderGrid() {
 }
 
 function toggleCard(model) {
-  expandedModel = expandedModel === model ? null : model;
+  if (expandedModel === model) return;
+  expandedModel = model;
   renderGrid();
-  if (expandedModel) {
-    setTimeout(() => {
-      const card = document.querySelector(`[data-model="${expandedModel}"]`);
-      if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 50);
-  }
+  setTimeout(() => {
+    const card = document.querySelector(`[data-model="${expandedModel}"]`);
+    if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
+}
+
+function closeCard() {
+  expandedModel = null;
+  renderGrid();
 }
 
 function filterCards(filter, btn) {
