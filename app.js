@@ -1,13 +1,6 @@
 let expandedModel = null;
 let activeFilter = 'all';
 
-/** Body za „studené nápoje důležité“ — podle příznaku cold v data.js (Eletta, PrimaDonna, Dedica). */
-function scoreByColdImportant() {
-  const s = {};
-  machines.forEach(m => { s[m.model] = m.cold ? 12 : -40; });
-  return s;
-}
-
 function renderCard(m) {
   const show = activeFilter === 'all' ||
     (activeFilter === 'automatický' && m.type === 'automatický') ||
@@ -123,7 +116,19 @@ function closeQuiz() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-/* ── Recommender ── */
+/* ═══════════════════════════════════════════════════════════════════════════
+ * BODOVACÍ CVIČENÍ — dočasně vypnuto (doporučovač + „Doporuč ten správný“).
+ * V portfoliu jen 8 kávovarů; systém hodnocení zatím nevyužíváme.
+ * Obnovení: odkomentovat tento blok + odpovídající sekci v index.html.
+ * ═══════════════════════════════════════════════════════════════════════════
+
+function scoreByColdImportant() {
+  const s = {};
+  machines.forEach(m => { s[m.model] = m.cold ? 12 : -40; });
+  return s;
+}
+
+// ── Recommender ──
 
 const recQuestions = [
   {
@@ -253,7 +258,7 @@ function showRecResult() {
   `;
 }
 
-/* ── Doporuč ten správný ── */
+// ── Doporuč ten správný ──
 
 const GUESS_ROUNDS = 5;
 let guessRound = 0;
@@ -277,7 +282,7 @@ const customerLabels = [
   "Rozhodující faktor"
 ];
 
-/** Při shodě bodů vítězí model dříve v poli (vyšší segment portfolia). */
+// Při shodě bodů vítězí model dříve v poli (vyšší segment portfolia).
 const MODEL_TIEBREAK_ORDER = [
   "ECAM 630.75.TSM",
   "ECAM 470.85.MB",
@@ -463,5 +468,7 @@ function showGuessResult() {
     </div>
   `;
 }
+
+*/
 
 renderGrid();
