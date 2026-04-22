@@ -25,13 +25,14 @@ It presents **8 coffee machine models** from a fixed portfolio with:
 | "Pomoz mi vybrat kávovar" recommender (5-question scoring) | **Active** |
 | Mobile-first responsive layout + safe-area insets | **Active** |
 | "Doporuč ten správný" guess-the-model game | **Disabled** — JS in `/* */` block in `app.js`, no HTML in DOM |
+| Code optimizations (event delegation, CSS cleanup) | **Done** |
 
 ### What "disabled" means for the guess game
 
-- The HTML for its trigger button and `#guess-game` panel was **removed** from `index.html` (no comment, just gone).
-- The JS code is preserved inside a `/* ... */` block comment at the bottom of `app.js` (lines ~273–461).
-- CSS classes for the guess game (`.guess-*`) remain in `styles.css` — harmless and ready if re-enabled.
-- To re-enable: add the HTML panel back to `index.html`, uncomment the JS block, and verify no duplicate IDs.
+- The HTML for its trigger button and `#guess-game` panel was removed from `index.html`.
+- The JS code is preserved inside a `/* ... */` block comment at the bottom of `app.js`.
+- CSS classes for the guess game were **removed** in the optimization pass.
+- To re-enable: add HTML panel back to `index.html`, uncomment JS block, restore `.guess-*` CSS classes from git history.
 
 ## Key decisions and rationale
 
@@ -44,14 +45,17 @@ It presents **8 coffee machine models** from a fixed portfolio with:
 3. **Split into 4 files:** `index.html`, `styles.css`, `data.js`, `app.js`  
    Separation of structure, presentation, data, and behavior. **Load order matters:** `data.js` must run before `app.js` because `app.js` references the global `machines` array.
 
-4. **Card expand/collapse UX**  
+4. **Event delegation instead of inline onclick**  
+   Cards, quiz reveal buttons, and recommender actions all use `data-action` attributes handled by two delegated `click` listeners on `document`. Removes string-interpolated `onclick` handlers. Header filters still use `onclick` because they pass `this`.
+
+5. **Card expand/collapse UX**  
    Clicking the same expanded card does **not** collapse it (prevents accidental closes on mobile). Only clicking a different card or the explicit "zavřít" button closes.
 
-5. **Recommender scoring**  
-   Each answer adds/subtracts per-model scores. Cold Brew question uses `scoreByColdImportant()` which gives +12 to cold-capable machines and -40 to others — prevents absurd recommendations. Tie-break uses `MODEL_TIEBREAK_ORDER` (premium models win ties).
+6. **Recommender scoring**  
+   Each answer adds/subtracts per-model scores. Cold Brew question uses `scoreByColdImportant()` which gives +12 to cold-capable machines and -40 to others. Tie-break uses `MODEL_TIEBREAK_ORDER` (premium models win ties).
 
-6. **Guess game disabled, recommender kept**  
-   With only 8 machines the guess game felt redundant. The recommender is useful as a training tool. Decision can be reversed since the code is preserved.
+7. **CSS custom properties for theming**  
+   Colors, fonts, and radii in `:root`. `--font` and `--font-display` variables eliminate repeated `font-family` declarations.
 
 ## Problems solved (historical)
 
@@ -62,7 +66,10 @@ It presents **8 coffee machine models** from a fixed portfolio with:
 | Dynamic Island / notch overlapping UI | `viewport-fit=cover` + `env(safe-area-inset-*)` on header, main, footer |
 | Cold-drink question giving wrong recommendation | `scoreByColdImportant()` with strong -40 penalty for non-cold machines |
 | Score ties producing random winners | Fixed `MODEL_TIEBREAK_ORDER` array |
-| `/* */` comment breaking mid-file | Inner section headers use `//` only, no nested `/* */` |
+| Inline onclick strings fragile with model codes | Event delegation via `data-action` / `data-model` attributes |
+| Repeated font-family declarations | CSS custom properties `--font` and `--font-display` |
+| Dead CSS bloat from disabled guess game | Removed ~115 lines of `.guess-*` rules |
+| Slow Google Fonts load | Added `preconnect` hints in `<head>` |
 
 ## Tech stack and dependencies
 
@@ -70,7 +77,7 @@ It presents **8 coffee machine models** from a fixed portfolio with:
 |-------|--------|
 | Markup | HTML5 (`lang="cs"`) |
 | Styling | Plain CSS, custom properties, mobile-first + `min-width` breakpoints |
-| Fonts | Google Fonts: Playfair Display + DM Sans (external stylesheet) |
+| Fonts | Google Fonts: Playfair Display + DM Sans (with `preconnect`) |
 | Logic | Vanilla JS, no npm packages, no modules |
 | Data | Single global `const machines = [...]` in `data.js` |
 
@@ -80,10 +87,10 @@ It presents **8 coffee machine models** from a fixed portfolio with:
 
 ```
 delonghi_kavovary/
-├── index.html          # Page shell: header, hero, recommender trigger + panel, grid mount, quiz section
-├── styles.css          # All visuals: dark theme, cards, recommender, guess-game (CSS kept), responsive
+├── index.html          # Page shell: header, hero, recommender, grid mount, quiz section
+├── styles.css          # Dark theme, cards, recommender, responsive (no guess-game CSS)
 ├── data.js             # 8 machine objects with nested quiz Q&A
-├── app.js              # UI logic: cards, filters, quiz, recommender (active), guess game (commented)
+├── app.js              # UI logic with event delegation; guess game commented at bottom
 ├── PROJECT_CONTEXT.md  # This file
 ├── README.md           # Setup & usage
 ├── CODE_GUIDE.md       # Function map & file connections

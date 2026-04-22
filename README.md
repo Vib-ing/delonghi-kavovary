@@ -41,16 +41,16 @@ Open the printed URL (e.g. `http://localhost:3000`).
 | Feature | Where in UI | Powered by |
 |---------|------------|------------|
 | Category filter | Header buttons | `filterCards()` + `activeFilter` |
-| Card expand | Click a card | `toggleCard()`, `expandedModel` |
-| Close detail | "zavřít ✕" button | `closeCard()` |
-| Model quiz | "Procvič si …" button | `data.js` → `quiz[]`, `openQuiz()` |
-| Recommender | "Pomoz mi vybrat kávovar" button | `recQuestions`, `openRecommender()` |
+| Card expand | Click a card | Event delegation → `toggleCard()` |
+| Close detail | "zavřít ✕" button | `data-action="close"` → `closeCard()` |
+| Model quiz | "Procvič si …" button | `data-action="quiz"` → `openQuiz()` |
+| Recommender | "Pomoz mi vybrat kávovar" button | `recQuestions` → `openRecommender()` |
 | Back from quiz | "Zpět na přehled" button | `closeQuiz()` |
 
 ## Editing content
 
 - **Machine text, quizzes, specs** — edit `data.js`. Each machine has a unique `model` string used as DOM ID (`data-model`). Keep 5 items in `quiz[]`.
-- **Recommender questions/scores** — edit `recQuestions` in `app.js` (line ~127). Each option has a `scores` object keyed by model code.
+- **Recommender questions/scores** — edit `recQuestions` in `app.js`. Each option has a `scores` object keyed by model code.
 - **Styles** — `styles.css`. Dark theme colors live in `:root` custom properties.
 - **Behavior / new features** — `app.js`.
 

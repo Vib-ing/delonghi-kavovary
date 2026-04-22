@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>DeLonghi – Průvodce kávovary pro promotéry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -12,10 +14,10 @@
 <header>
   <div class="logo">De'Longhi <span>Průvodce pro promotéry</span></div>
   <div class="header-right">
-    <button class="filter-btn active mode-btn" onclick="filterCards('all',this)" data-filter="all">Vše</button>
-    <button class="filter-btn mode-btn" onclick="filterCards('automatický',this)" data-filter="auto">Automaty</button>
-    <button class="filter-btn mode-btn" onclick="filterCards('pákový',this)" data-filter="paka">Pákové</button>
-    <button class="filter-btn mode-btn" onclick="filterCards('cold',this)" data-filter="cold">Cold Brew</button>
+    <button class="filter-btn active mode-btn" onclick="filterCards('all',this)">Vše</button>
+    <button class="filter-btn mode-btn" onclick="filterCards('automatický',this)">Automaty</button>
+    <button class="filter-btn mode-btn" onclick="filterCards('pákový',this)">Pákové</button>
+    <button class="filter-btn mode-btn" onclick="filterCards('cold',this)">Cold Brew</button>
   </div>
 </header>
 
@@ -33,7 +35,7 @@
     <div class="recommender-header">
       <div class="rec-header-top">
         <div class="quiz-title">Který kávovar doporučit?</div>
-        <button class="close-btn" onclick="closeRecommender()">zavřít ✕</button>
+        <button class="close-btn" data-action="rec-close">zavřít ✕</button>
       </div>
       <div class="quiz-subtitle">5 otázek pro zákazníka · Vyber odpověď a na konci uvidíš doporučení</div>
       <div class="rec-progress"><div class="rec-progress-bar" id="rec-progress-bar"></div></div>

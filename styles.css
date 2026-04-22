@@ -8,6 +8,7 @@
   --gold: #c8922a;
   --gold2: #e8b24a;
   --gold-light: rgba(200,146,42,0.12);
+  --gold-border: rgba(200,146,42,0.4);
   --text: #f0ebe4;
   --text2: #a09080;
   --text3: #6a5a4a;
@@ -16,18 +17,26 @@
   --red: #c05040;
   --radius: 12px;
   --radius-sm: 8px;
+  --font: 'DM Sans', sans-serif;
+  --font-display: 'Playfair Display', serif;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font);
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
   min-height: 100dvh;
   line-height: 1.6;
   -webkit-text-size-adjust: 100%;
+}
+
+/* Shared interactive base */
+button {
+  font-family: var(--font);
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* ── Header ── */
@@ -49,7 +58,7 @@ header {
 }
 
 .logo {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-display);
   font-size: 18px;
   font-weight: 700;
   color: var(--gold2);
@@ -61,7 +70,7 @@ header {
   font-weight: 400;
   font-size: 12px;
   margin-left: 8px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font);
 }
 
 .header-right {
@@ -76,6 +85,7 @@ header {
 
 .header-right::-webkit-scrollbar { display: none; }
 
+.filter-btn,
 .mode-btn {
   font-size: 12px;
   padding: 7px 14px;
@@ -86,9 +96,10 @@ header {
   cursor: pointer;
   transition: all 0.15s;
   white-space: nowrap;
-  -webkit-tap-highlight-color: transparent;
 }
 
+.filter-btn.active,
+.filter-btn:hover,
 .mode-btn.active,
 .mode-btn:hover {
   background: var(--gold-light);
@@ -109,7 +120,7 @@ main {
 .hero { margin-bottom: 1.5rem; }
 
 .hero h1 {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-display);
   font-size: 26px;
   font-weight: 400;
   color: var(--text);
@@ -119,30 +130,6 @@ main {
 
 .hero h1 em { color: var(--gold2); font-style: normal; }
 .hero p { color: var(--text2); font-size: 14px; max-width: 520px; }
-
-/* ── Filter ── */
-
-.filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 2rem; }
-
-.filter-btn {
-  font-size: 12px;
-  padding: 7px 14px;
-  border-radius: 20px;
-  border: 0.5px solid var(--border2);
-  background: transparent;
-  color: var(--text2);
-  cursor: pointer;
-  transition: all 0.15s;
-  font-family: 'DM Sans', sans-serif;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.filter-btn.active,
-.filter-btn:hover {
-  background: var(--gold-light);
-  color: var(--gold2);
-  border-color: rgba(200,146,42,0.4);
-}
 
 /* ── Grid ── */
 
@@ -163,7 +150,6 @@ main {
   transition: border-color 0.2s, transform 0.15s;
   position: relative;
   overflow: hidden;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .card::before {
@@ -182,7 +168,8 @@ main {
 .card.expanded::before { opacity: 1; }
 
 .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
-.card-name { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 500; color: var(--text); }
+.card-top-right { display: flex; gap: 6px; align-items: center; }
+.card-name { font-family: var(--font-display); font-size: 16px; font-weight: 500; color: var(--text); }
 .card-model { font-size: 11px; color: var(--text3); margin-top: 3px; letter-spacing: 0.03em; }
 .card-tier { font-size: 11px; color: var(--text2); margin-top: 1px; }
 
@@ -196,7 +183,7 @@ main {
 }
 
 .badge-auto { background: rgba(74,158,106,0.15); color: #5aba80; border: 0.5px solid rgba(74,158,106,0.3); }
-.badge-manual { background: rgba(200,146,42,0.12); color: var(--gold2); border: 0.5px solid rgba(200,146,42,0.3); }
+.badge-manual { background: var(--gold-light); color: var(--gold2); border: 0.5px solid rgba(200,146,42,0.3); }
 
 .tag-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
 
@@ -220,6 +207,9 @@ main {
   border: 0.5px solid var(--border);
 }
 
+.chevron { font-size: 11px; color: var(--text3); transition: transform 0.2s; }
+.card.expanded .chevron { transform: rotate(180deg); }
+
 /* ── Detail panel ── */
 
 .detail { display: none; margin-top: 1.25rem; }
@@ -235,7 +225,7 @@ main {
 }
 
 .detail-header h3 {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-display);
   font-size: 14px;
   font-weight: 400;
   color: var(--text2);
@@ -249,9 +239,7 @@ main {
   cursor: pointer;
   padding: 6px 12px;
   border-radius: 6px;
-  font-family: 'DM Sans', sans-serif;
   transition: all 0.15s;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .close-btn:hover { color: var(--text); border-color: var(--border2); }
@@ -283,7 +271,7 @@ main {
   line-height: 1.5;
 }
 
-.detail-section ul li::before { content: "—"; color: var(--text3); flex-shrink: 0; }
+.detail-section ul li::before { content: "\2014"; color: var(--text3); flex-shrink: 0; }
 
 .promo-box {
   margin-top: 1.25rem;
@@ -308,14 +296,12 @@ main {
   font-size: 14px;
   padding: 10px 20px;
   border-radius: var(--radius-sm);
-  border: 0.5px solid rgba(200,146,42,0.4);
+  border: 0.5px solid var(--gold-border);
   background: var(--gold-light);
   color: var(--gold2);
   cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
   transition: all 0.15s;
   width: 100%;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .quiz-btn:hover { background: rgba(200,146,42,0.2); }
@@ -332,7 +318,7 @@ main {
 #quiz-section.visible { display: block; }
 
 .quiz-title {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-display);
   font-size: 22px;
   font-weight: 400;
   margin-bottom: 0.5rem;
@@ -368,9 +354,7 @@ main {
   background: transparent;
   color: var(--text2);
   cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
   transition: all 0.15s;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .reveal-btn:hover { background: rgba(255,255,255,0.04); }
@@ -399,10 +383,8 @@ main {
   background: transparent;
   color: var(--text2);
   cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
   transition: all 0.15s;
   width: 100%;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .back-btn:hover { background: rgba(255,255,255,0.04); color: var(--text); }
@@ -419,9 +401,6 @@ footer {
   color: var(--text3);
 }
 
-.chevron { font-size: 11px; color: var(--text3); transition: transform 0.2s; }
-.card.expanded .chevron { transform: rotate(180deg); }
-
 /* ── Recommender ── */
 
 .game-triggers {
@@ -436,7 +415,6 @@ footer {
   width: 100%;
   padding: 14px 20px;
   font-size: 15px;
-  font-family: 'DM Sans', sans-serif;
   font-weight: 500;
   color: var(--gold2);
   background: linear-gradient(135deg, rgba(200,146,42,0.1), rgba(200,146,42,0.05));
@@ -444,7 +422,6 @@ footer {
   border-radius: var(--radius);
   cursor: pointer;
   transition: all 0.2s;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .recommend-trigger:hover {
@@ -501,7 +478,6 @@ footer {
   text-align: left;
   padding: 12px 14px;
   font-size: 13px;
-  font-family: 'DM Sans', sans-serif;
   color: var(--text2);
   background: rgba(255,255,255,0.03);
   border: 0.5px solid var(--border2);
@@ -509,14 +485,13 @@ footer {
   cursor: pointer;
   transition: all 0.15s;
   line-height: 1.5;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .rec-option:hover,
 .rec-option:active {
   background: var(--gold-light);
   color: var(--gold2);
-  border-color: rgba(200,146,42,0.4);
+  border-color: var(--gold-border);
 }
 
 .rec-result {
@@ -527,7 +502,7 @@ footer {
 }
 
 .rec-result-name {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-display);
   font-size: 20px;
   color: var(--gold2);
   margin-bottom: 2px;
@@ -558,12 +533,7 @@ footer {
   margin-bottom: 6px;
 }
 
-.rec-runner {
-  font-size: 12px;
-  color: var(--text2);
-  padding: 4px 0;
-}
-
+.rec-runner { font-size: 12px; color: var(--text2); padding: 4px 0; }
 .rec-runner strong { color: var(--text); }
 
 .rec-actions { display: flex; gap: 8px; margin-top: 1.25rem; flex-wrap: wrap; }
@@ -573,17 +543,15 @@ footer {
   min-width: 140px;
   padding: 10px 16px;
   font-size: 13px;
-  font-family: 'DM Sans', sans-serif;
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.15s;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .rec-action-primary {
   background: var(--gold-light);
   color: var(--gold2);
-  border: 0.5px solid rgba(200,146,42,0.4);
+  border: 0.5px solid var(--gold-border);
 }
 
 .rec-action-primary:hover { background: rgba(200,146,42,0.2); }
@@ -597,121 +565,6 @@ footer {
 .rec-action-secondary:hover { background: rgba(255,255,255,0.04); color: var(--text); }
 
 .rec-restart-btn { margin-top: 1.25rem; width: 100%; flex: none; }
-
-.guess-trigger {
-  background: linear-gradient(135deg, rgba(74,158,106,0.1), rgba(74,158,106,0.05));
-  border-color: rgba(74,158,106,0.3);
-  color: var(--green);
-}
-
-.guess-trigger:hover {
-  background: linear-gradient(135deg, rgba(74,158,106,0.18), rgba(74,158,106,0.08));
-  border-color: rgba(74,158,106,0.5);
-}
-
-.guess-clues { margin-bottom: 1.25rem; }
-
-.guess-clue {
-  font-size: 13px;
-  color: var(--text2);
-  padding: 6px 0;
-  border-bottom: 0.5px solid var(--border);
-  display: flex;
-  gap: 8px;
-  line-height: 1.5;
-}
-
-.guess-clue::before { content: "—"; color: var(--text3); flex-shrink: 0; }
-
-.guess-options { display: grid; grid-template-columns: 1fr; gap: 8px; }
-
-.guess-opt {
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 12px 14px;
-  font-size: 14px;
-  font-family: 'DM Sans', sans-serif;
-  color: var(--text2);
-  background: rgba(255,255,255,0.03);
-  border: 0.5px solid var(--border2);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all 0.15s;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.guess-opt:hover { background: var(--gold-light); color: var(--gold2); border-color: rgba(200,146,42,0.4); }
-.guess-opt:disabled { cursor: default; opacity: 0.6; }
-.guess-opt:disabled:hover { background: rgba(255,255,255,0.03); color: var(--text2); border-color: var(--border2); }
-
-.guess-opt.correct {
-  background: var(--green-bg);
-  color: var(--green);
-  border-color: rgba(74,158,106,0.5);
-  opacity: 1;
-}
-
-.guess-opt.wrong {
-  background: rgba(192,80,64,0.1);
-  color: var(--red);
-  border-color: rgba(192,80,64,0.4);
-  opacity: 1;
-}
-
-.guess-feedback {
-  margin-top: 1rem;
-  padding: 12px 14px;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-.guess-feedback.correct {
-  background: rgba(74,158,106,0.08);
-  border-left: 2px solid var(--green);
-  color: var(--text2);
-}
-
-.guess-feedback.wrong {
-  background: rgba(192,80,64,0.08);
-  border-left: 2px solid var(--red);
-  color: var(--text2);
-}
-
-.guess-feedback strong { color: var(--text); }
-
-.guess-next-btn {
-  margin-top: 1rem;
-  width: 100%;
-  padding: 10px 16px;
-  font-size: 14px;
-  font-family: 'DM Sans', sans-serif;
-  border-radius: var(--radius-sm);
-  border: 0.5px solid rgba(200,146,42,0.4);
-  background: var(--gold-light);
-  color: var(--gold2);
-  cursor: pointer;
-  transition: all 0.15s;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.guess-next-btn:hover { background: rgba(200,146,42,0.2); }
-
-.guess-final-score {
-  font-family: 'Playfair Display', serif;
-  font-size: 36px;
-  color: var(--gold2);
-  text-align: center;
-  margin: 0.5rem 0;
-}
-
-.guess-final-msg {
-  font-size: 14px;
-  color: var(--text2);
-  text-align: center;
-  margin-bottom: 1rem;
-}
 
 /* ── Tablet (640px+) ── */
 
@@ -734,26 +587,17 @@ footer {
   .hero h1 { font-size: 32px; }
   .hero p { font-size: 15px; }
 
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
+  .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
 
   .card { padding: 1.25rem; }
   .card.expanded { grid-column: 1 / -1; }
 
-  .detail-cols {
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-  }
+  .detail-cols { grid-template-columns: 1fr 1fr; gap: 2rem; }
 
   .game-triggers { flex-direction: row; }
   .recommend-trigger { flex: 1; }
 
-  .guess-options { grid-template-columns: 1fr 1fr; }
-  .guess-next-btn { width: auto; }
-
-  .quiz-btn { width: auto; font-size: 13px; padding: 8px 16px; }
+  .quiz-btn,
   .back-btn { width: auto; font-size: 13px; padding: 8px 16px; }
 
   .q-card { padding: 1.25rem; }
